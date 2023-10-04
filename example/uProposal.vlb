@@ -1,0 +1,12 @@
+﻿[NavPanel]
+Coordinates=584,287,60,51
+
+[CompleteButton]
+Coordinates=372,427,94,51
+
+[WebBrowser]
+Coordinates=241,488,77,33
+
+[CloseButton]
+Coordinates=705,366,75,51
+
