@@ -58,7 +58,7 @@ procedure IntegratorEnterProcess(const procId: Integer);
 var
   index: Integer;
 begin
-  if process.InstrumentationEnabled then
+  if process.Enabled then
   begin
     index := process.Id.IndexOf(procId);
     process.StartTime[index] := 0;
@@ -74,7 +74,7 @@ begin
 //      Sleep(Random(100));
 
       // Insercao do identificador na pilha
-      if config.TraceEnabled then
+      if config.TEnabled then
         stack.Push(procId);
     end;
   end;
@@ -86,7 +86,7 @@ var
   childId: Integer;
   parentId: Integer;
 begin
-  if process.InstrumentationEnabled then
+  if process.Enabled then
   begin
     if procId > 0 then
     begin
@@ -95,7 +95,7 @@ begin
       process.StopTime[index] := MillisecondOfTheDay(Now);
 
       // Envio por traces
-      if config.TraceEnabled then
+      if config.TEnabled then
       begin
         if stack.Count = 1 then
           parentId := 0
@@ -151,14 +151,14 @@ var
   childId: Integer;
   parentId: Integer;
 begin
-  if process.InstrumentationEnabled then
+  if process.Enabled then
   begin
     if procId > 0 then
     begin
       index := process.Id.IndexOf(procId);
 
       // Envio por traces
-      if config.TraceEnabled then
+      if config.TEnabled then
       begin
         if stack.Count = 1 then
           parentId := 0
@@ -227,7 +227,7 @@ end;
 
 procedure IntegratorSendEnableSign(const sign: Boolean);
 begin
-  process.InstrumentationEnabled := sign;
+  process.Enabled := sign;
 end;
 
 procedure Initialize;

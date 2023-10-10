@@ -34,7 +34,6 @@ uses
 
 var
   lTags: String;
-  cTags: String;
 
 { TAPILogClient }
 
@@ -50,7 +49,6 @@ var
 begin
   token := TStringList.Create;
   lTags := '';
-  cTags := '';
 
   try
     if config.LTags <> EmptyStr then
@@ -65,9 +63,6 @@ begin
       lTags := Copy(lTags, 1, lTags.Length - 2);
       lTags := ', ' + lTags;
     end;
-
-    if config.CTags <> EmptyStr then
-      cTags := ', ' + config.CTags;
   finally
     token.Free;
   end;
@@ -134,6 +129,10 @@ var
 begin
   line := StringReplace(line, '\', '\\', [rfReplaceAll]);
   line := StringReplace(line, '"', '\"', [rfReplaceAll]);
+  cTags := '';
+  
+  if config.CTags <> EmptyStr then
+    cTags := ', ' + config.CTags;
 
   content := '[{' +
     '"ddsource": "delphi", ' +
@@ -144,9 +143,7 @@ begin
     '"ddtags": ' +
 
       // *****TODO: Precisa tratar isso, tá errado (")
-      config.LTags + // acrescenta mais tags pelo arquivo .ini
       lTags + // acrescenta mais tags pelo arquivo .ini
-      config.CTags + // acrescenta mais tags pelo envio da aplicação
       cTags + // acrescenta mais tags pelo envio da aplicação
   '}]';
 

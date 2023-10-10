@@ -9,7 +9,7 @@ type
   TConfigFile = class(TObject)
   private
     FApiKey: String;
-    FTraceEnabled: Boolean;
+    FTEnabled: Boolean;
     FTEndpoint: String;
     FTTags: String;
     FMIntegrationType: String;
@@ -35,7 +35,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property ApiKey: String read FApiKey write FApiKey;
-    property TraceEnabled: Boolean read FTraceEnabled write FTraceEnabled;
+    property TEnabled: Boolean read FTEnabled write FTEnabled;
     property TEndpoint: String read FTEndpoint write FTEndpoint;
     property TTags: String read FTTags write FTTags;
     property MIntegrationType: String read FMIntegrationType write FMIntegrationType;
@@ -125,7 +125,7 @@ begin
       begin
         try
           ApiKey := ReadString('General', 'ApiKey', '');
-          TraceEnabled := ReadBool('Traces', 'TraceEnabled', true);
+          TEnabled := ReadBool('Traces', 'Enabled', true);
           TEndpoint := StringReplace(ReadString('Traces', 'Endpoint', 'http://' + FHostname + ':8126/v0.3/traces'), 'hostname', FHostname, [rfReplaceAll]);
           auxTag := '';
           for i := 1 to 5 do

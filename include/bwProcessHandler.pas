@@ -9,7 +9,7 @@ uses
 type
   TProcess = class(TObject)
   private
-    FInstrumentationEnabled: Boolean;
+    FEnabled: Boolean;
     FId: TList<Integer>;
     FName: TList<String>;
     FStartTime: TList<Int64>;
@@ -18,7 +18,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    property InstrumentationEnabled: Boolean read FInstrumentationEnabled write FInstrumentationEnabled;
+    property Enabled: Boolean read FEnabled write FEnabled;
     property Id: TList<Integer> read FId write FId;
     property Name: TList<String> read FName write FName;
     property StartTime: TList<Int64> read FStartTime write FStartTime;
@@ -36,7 +36,7 @@ uses
 constructor TProcess.Create;
 begin
   inherited Create;
-  FInstrumentationEnabled := true;
+  FEnabled := true;
   FId := TList<Integer>.Create;
   FName := TList<String>.Create;
   FStartTime := TList<Int64>.Create;
