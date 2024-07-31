@@ -125,7 +125,7 @@ begin
       begin
         try
           ApiKey := ReadString('General', 'ApiKey', '');
-          TEnabled := ReadBool('Traces', 'Enabled', true);
+          TEnabled := ReadBool('Traces', 'TraceEnabled', true);
           TEndpoint := StringReplace(ReadString('Traces', 'Endpoint', 'http://' + FHostname + ':8126/v0.3/traces'), 'hostname', FHostname, [rfReplaceAll]);
           auxTag := '';
           for i := 1 to 5 do

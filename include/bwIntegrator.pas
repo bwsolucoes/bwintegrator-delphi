@@ -30,11 +30,9 @@ uses
 //  System.NetEncoding,
   bwTraceClient,
   bwAPIMetricClient,
-  bwAPIEventClient,
   bwAPILogClient,
   bwAPIExceptionClient,
   bwStatsdMetricClient,
-  bwStatsdEventClient,
   bwStatsdLogClient,
   bwStatsdExceptionClient,
   bwProcessHandler,
@@ -45,13 +43,11 @@ var
   config: TConfigFile;
   traceClient: TTraceClient;
   apiMetricClient: TAPIMetricClient;
-  apiEventClient: TAPIEventClient;
   apiExceptionClient: TAPIExceptionClient;
 //  apiLogClient: TAPILogClient;
   statsdMetricClient: TStatsdMetricClient;
-  statsdEventClient: TStatsdEventClient;
   statsdExceptionClient: TStatsdExceptionClient;
-//  statsdLogClient: TStatsdLogClient; // StatsD nao manda logs
+//  statsdLogClient: TStatsdLogClient; // statsD nao manda logs
   stack: TStack<Integer>;
 
 procedure IntegratorEnterProcess(const procId: Integer);
@@ -234,15 +230,20 @@ procedure Initialize;
 begin
   process := TProcess.Create;
   config := TConfigFile.Create;
-  traceClient := TTraceClient.Create(config);
-  apiMetricClient := TAPIMetricClient.Create(config);
-  apiEventClient := TAPIEventClient.Create(config);
-  apiExceptionClient := TAPIExceptionClient.Create;
+  if config.TEnabled then
+    traceClient := TTraceClient.Create(config);
+  if config.MIntegrationType = 'api' then // envio via API
+  begin
+    apiMetricClient := TAPIMetricClient.Create(config);
+    apiExceptionClient := TAPIExceptionClient.Create;
+  end;
 //  apiLogClient := TAPILogClient.Create(config);
-  statsdMetricClient := TStatsdMetricClient.Create(config);
-  statsdEventClient := TStatsdEventClient.Create(config);
-  statsdExceptionClient := TStatsdExceptionClient.Create;
-//  statsdLogClient := TStatsdLogClient.Create; // StatsD nao manda logs
+  if config.MIntegrationType = 'statsd' then // envio via statsD
+  begin
+    statsdMetricClient := TStatsdMetricClient.Create(config);
+    statsdExceptionClient := TStatsdExceptionClient.Create;
+  end;
+//  statsdLogClient := TStatsdLogClient.Create; // statsD nao manda logs
   stack := TStack<Integer>.Create;
   Randomize;
 end;
@@ -250,15 +251,18 @@ end;
 procedure Finalize;
 begin
   stack.Free;
-  traceClient.Destroy;
-  apiMetricClient.Destroy;
-  apiEventClient.Destroy;
-  apiExceptionClient.Destroy;
+  if config.TEnabled then
+    traceClient.Destroy;
+  if config.MIntegrationType = 'api' then // envio via API
+    apiMetricClient.Destroy;
+  if (config.MIntegrationType = 'api') or (config.EIntegrationType = 'api') then
+    apiExceptionClient.Destroy;
 //  apiLogClient.Destroy;
-  statsdMetricClient.Destroy;
-  statsdEventClient.Destroy;
-  statsdExceptionClient.Destroy;
-//  statsdLogClient.Destroy; // StatsD nao manda logs
+  if config.MIntegrationType = 'statsd' then // envio via statsD
+    statsdMetricClient.Destroy;
+  if (config.MIntegrationType = 'statsd') or (config.EIntegrationType = 'statsd') then
+    statsdExceptionClient.Destroy;
+//  statsdLogClient.Destroy; // statsD nao manda logs
   config.Destroy;
   process.Destroy;
 end;
